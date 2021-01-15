@@ -38,8 +38,7 @@ static TaskHandle_t lcdHandle;
 static TimerHandle_t knockTimer;
 SemaphoreHandle_t lcdSem;
 static bool isTiming = false;
-//static char lcdBuf[80] = "I am not here!      Kvar Taramnu!";
-static char lcdBuf[80] = "I am not here soplease go away";
+static char lcdBuf[80] = "---Kvar Taramnu!---  Welcome to the future";
 static char rx_buffer[80];
 
 static void  gpio_isr_handler(void* arg)
@@ -119,14 +118,18 @@ void LCD_Task(void* param)
             }
 
             spaceIndex = strchr(lcdBuf + i, space);
-            if(spaceIndex) {
+            if(!spaceIndex)
+                wordlen = (lcdBuf + strlen(lcdBuf)) - (lcdBuf + i);
+
+            else
                 wordlen = spaceIndex - (lcdBuf + i);
-                if(wordlen > (19 - col)) {
-                    row++;
-                    col = 0;
-                    LCD_setCursor(col, row);
-                }
+
+            if(wordlen > (19 - col)) {
+                row++;
+                col = 0;
+                LCD_setCursor(col, row);
             }
+            
 
             LCD_writeChar(lcdBuf[i]);
 
